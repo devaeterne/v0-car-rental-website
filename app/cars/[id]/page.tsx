@@ -54,7 +54,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const whatsappUrl = `https://wa.me/${PHONE_NUMBER.replace(/\+/g, '')}?text=${whatsappMessage}`
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50/50">
+    <div className="relative overflow-hidden bg-background pt-24 pb-12 lg:pt-32 lg:pb-20">s
       <Header />
       <main className="flex-1 py-8 sm:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -113,7 +113,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                 </Badge>
                 <h1 className="mt-3 text-5xl font-black tracking-tight text-slate-900">{car.brand}</h1>
                 <p className="mt-1 text-slate-500 font-medium"> X Royal Güvencesiyle</p>
-                
+
                 <div className="mt-6 flex items-baseline gap-2 bg-white w-fit px-6 py-3 rounded-2xl border border-slate-200 shadow-sm">
                   <span className="text-4xl font-black text-primary">€{car.price_per_day}</span>
                   <span className="text-slate-400 font-bold uppercase text-xs tracking-widest">/ GÜNLÜK</span>

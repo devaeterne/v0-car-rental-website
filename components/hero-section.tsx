@@ -10,7 +10,7 @@ const WHATSAPP_URL = `https://wa.me/${PHONE_NUMBER.replace(/\+/g, '')}?text=${en
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-background py-12 lg:py-20">
+    <section className="relative overflow-hidden bg-background pt-24 pb-12 lg:pt-32 lg:pb-20">
       {/* Arka Plan Deseni (Opsiyonel - Daha Soft) */}
       <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none">
         <svg width="100%" height="100%">

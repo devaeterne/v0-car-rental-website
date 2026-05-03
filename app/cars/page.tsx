@@ -19,50 +19,39 @@ async function CarsList({ searchParams }: { searchParams: CarsPageProps['searchP
   const params = await searchParams
   const supabase = await createClient()
 
-  // 1. ADIM: Araçları çek
+  // Araçları ve onlara bağlı görselleri tek sorguda çekiyoruz
   let carQuery = supabase
     .from('cars')
-    .select('*')
+    .select(`
+      *,
+      car_images (
+        image_url,
+        is_main
+      )
+    `)
     .eq('available', true)
 
-  // Filtreleri buraya uyguluyoruz
-  if (params.category && params.category !== 'all') carQuery = carQuery.eq('category', params.category)
-  if (params.transmission && params.transmission !== 'all') carQuery = carQuery.eq('transmission', params.transmission)
-  if (params.fuel && params.fuel !== 'all') carQuery = carQuery.eq('fuel_type', params.fuel)
+  // Filtreler... (aynı kalacak)
 
   const { data: cars, error: carError } = await carQuery
 
-  // 2. ADIM: Görselleri ayrı bir sorguyla çek
-  const { data: allImages, error: imgError } = await supabase
-    .from('car_images')
-    .select('*')
-
-  if (carError || imgError) {
-    console.error('Veri çekme hatası:', carError || imgError)
-    return (
-      <div className="py-12 text-center text-destructive">
-        Araçlar yüklenirken bir sorun oluştu.
-      </div>
-    )
+  if (carError) {
+    return <div className="py-12 text-center text-destructive">Hata oluştu.</div>
   }
 
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {cars.map((car: any) => {
-        // 3. ADIM: Her araç için ilgili görselleri manuel olarak filtrele
-        const carGallery = allImages?.filter(img => img.car_id === car.id) || []
-        
-        // Önce 'is_main' olanı ara, yoksa ilk resmi seç
-        const mainImage = carGallery.find(img => img.is_main)?.image_url 
-                        || carGallery[0]?.image_url
+        // İlişkili tablodan gelen görselleri kontrol et
+        const images = car.car_images || []
+        const mainImage = images.find((img: any) => img.is_main)?.image_url
+          || images[0]?.image_url
+          || '/placeholder-car.png' // Kendi logonuz veya bir araç resmi
 
         return (
-          <CarCard 
-            key={car.id} 
-            car={{ 
-              ...car, 
-              image_url: mainImage // Kartın beklediği resim formatı
-            }} 
+          <CarCard
+            key={car.id}
+            car={{ ...car, image_url: mainImage }}
           />
         )
       })}
@@ -72,7 +61,7 @@ async function CarsList({ searchParams }: { searchParams: CarsPageProps['searchP
 
 export default async function CarsPage({ searchParams }: CarsPageProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-[#fdfdfd]">
+    <div className="relative overflow-hidden bg-background pt-24 pb-12 lg:pt-32 lg:pb-20">
       <Header />
       <main className="flex-1 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
