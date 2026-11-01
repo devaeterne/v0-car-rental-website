@@ -3,20 +3,24 @@ import Link from 'next/link'
 import { CarFront, FileDown, Pencil, Plus } from 'lucide-react'
 import { requireAdmin } from '@/lib/admin/auth'
 import { toggleCarStatus } from '@/app/admin/actions'
+import { getCarDisplayName } from '@/lib/admin/car-display'
 
 type CarRow = {
-  id: string; brand: string; model: string; year: number; price_per_day: number; available: boolean;
+  id: string; name: string; brand: string; model: string; year: number; price_per_day: number; available: boolean;
   car_images?: {image_url:string; is_main:boolean}[]
 }
 export const dynamic = 'force-dynamic'
-export default async function AdminHome({searchParams}: {searchParams:Promise<{error?:string}>}) {
-  const { error: actionError } = await searchParams
+export default async function AdminHome({searchParams}: {searchParams:Promise<{error?:string; status?:string}>}) {
+  const { error: actionError, status: requestedStatus } = await searchParams
+  const status = requestedStatus === 'active' || requestedStatus === 'inactive' ? requestedStatus : 'all'
   const {supabase} = await requireAdmin()
   const {data, error} = await supabase.from('cars')
-    .select('id,brand,model,year,price_per_day,available,car_images!car_images_car_id_fkey(image_url,is_main)')
+    .select('id,name,brand,model,year,price_per_day,available,car_images!car_images_car_id_fkey(image_url,is_main)')
     .order('created_at',{ascending:false})
   const cars = (data || []) as CarRow[]
   const active = cars.filter(c => c.available).length
+  const visibleCars = status === 'active' ? cars.filter(c => c.available)
+    : status === 'inactive' ? cars.filter(c => !c.available) : cars
   return <div className="space-y-7">
     <div className="flex flex-wrap items-center justify-between gap-4">
       <div><h1 className="text-3xl font-bold">Filo yönetimi</h1><p className="mt-2 text-sm text-slate-500">Araçları yönetin, yayına alın veya pasife çekin.</p></div>
@@ -33,13 +37,26 @@ export default async function AdminHome({searchParams}: {searchParams:Promise<{e
         <div><h2 className="font-bold">Araç listesi</h2><p className="text-xs text-slate-500">Pasif araçlar sitede görünmez.</p></div>
         <a href="/feeds/cars.xml" download="xroyal-cars.xml" className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold"><FileDown className="h-4 w-4"/> XML export</a>
       </div>
+      <nav aria-label="Araç durumuna göre filtrele" className="flex flex-wrap gap-2 border-b px-5 py-3">
+        {([
+          ['all', 'Tüm araçlar', cars.length],
+          ['active', 'Aktif', active],
+          ['inactive', 'Pasif', cars.length - active],
+        ] as const).map(([value, label, count]) =>
+          <Link key={value} href={value === 'all' ? '/admin' : '/admin?status=' + value}
+            aria-current={status === value ? 'page' : undefined}
+            className={status === value ? 'rounded-lg bg-[#17191c] px-3 py-2 text-xs font-semibold text-white' : 'rounded-lg border px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50'}>
+            {label} ({count})
+          </Link>
+        )}
+      </nav>
       <div className="overflow-x-auto"><table className="w-full min-w-[650px] text-left text-sm">
         <thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="px-5 py-3">Araç</th><th className="px-4 py-3">Fiyat</th><th className="px-4 py-3">Durum</th><th className="px-4 py-3 text-right">İşlemler</th></tr></thead>
         <tbody className="divide-y">
-          {cars.map(car => {
+          {visibleCars.map(car => {
             const photo = car.car_images?.find(i=>i.is_main)?.image_url || car.car_images?.[0]?.image_url
             return <tr key={car.id} className="hover:bg-slate-50">
-              <td className="px-5 py-4"><div className="flex items-center gap-3">{photo ? <div className="relative h-14 w-20 overflow-hidden rounded-lg"><Image src={photo} alt="" fill unoptimized className="object-cover"/></div> : <div className="grid h-14 w-20 place-items-center rounded-lg bg-slate-100"><CarFront className="text-slate-400"/></div>}<div><b>{car.brand} {car.model}</b><div className="text-xs text-slate-400">{car.year}</div></div></div></td>
+              <td className="px-5 py-4"><div className="flex items-center gap-3">{photo ? <div className="relative h-14 w-20 overflow-hidden rounded-lg"><Image src={photo} alt="" fill unoptimized className="object-cover"/></div> : <div className="grid h-14 w-20 place-items-center rounded-lg bg-slate-100"><CarFront className="text-slate-400"/></div>}<div><b>{getCarDisplayName(car)}</b><div className="text-xs text-slate-400">{car.year}</div></div></div></td>
               <td className="px-4 py-4 font-semibold">€{Number(car.price_per_day).toFixed(2)}</td>
               <td className="px-4 py-4"><span className={car.available ? 'rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700' : 'rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600'}>{car.available ? 'Aktif' : 'Pasif'}</span></td>
               <td className="px-4 py-4"><div className="flex items-center justify-end gap-2">
@@ -51,6 +68,7 @@ export default async function AdminHome({searchParams}: {searchParams:Promise<{e
         </tbody>
       </table></div>
       {!error && cars.length===0 && <p className="p-10 text-center text-sm text-slate-500">Henüz araç bulunmuyor.</p>}
+      {!error && cars.length>0 && visibleCars.length===0 && <p className="p-10 text-center text-sm text-slate-500">Bu durumda araç bulunmuyor. Tüm araçları görüntüleyebilirsiniz.</p>}
     </div>
   </div>
 }
