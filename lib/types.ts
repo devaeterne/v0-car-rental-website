@@ -1,5 +1,5 @@
 export interface CarImage {
-  id: string;
+  id: number | string;
   car_id: string;
   image_url: string;
   is_main: boolean;

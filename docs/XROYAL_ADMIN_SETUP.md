@@ -38,3 +38,6 @@
 - No bookings management or date-based availability in V1.
 - Rate limiting/WAF are operational configuration, not supplied by this code.
 - Audit database migration and existing policies before any live SQL. Do not use the DASOFT or ModuleX database.
+
+## Verified XROYALPROJECT schema (2026-11-01)
+Supabase project ref mfsszpjbuikwbzwpwchp: cars originally used is_available and lacked available/model/created_at/features. car_images.id is bigint identity, not uuid. Migration scripts/003_xroyal_admin.sql adds compatibility columns while preserving the original layout and syncs is_available with available. Admin image actions validate numeric identity IDs.

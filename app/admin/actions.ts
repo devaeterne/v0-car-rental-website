@@ -122,7 +122,7 @@ export async function setMainPhoto(form: FormData) {
   const { supabase } = await requireAdmin()
   const carId = String(form.get('car_id') || '')
   const imageId = String(form.get('image_id') || '')
-  if (!uuid.safeParse(carId).success || !uuid.safeParse(imageId).success)
+  if (!uuid.safeParse(carId).success || !/^[1-9]\d{0,18}$/.test(imageId))
     redirect('/admin?error=invalid-id')
   const back = '/admin/cars/' + carId + '/edit'
   const { data: found } = await supabase.from('car_images')
@@ -141,7 +141,7 @@ export async function removeCarPhoto(form: FormData) {
   const { supabase } = await requireAdmin()
   const carId = String(form.get('car_id') || '')
   const imageId = String(form.get('image_id') || '')
-  if (!uuid.safeParse(carId).success || !uuid.safeParse(imageId).success)
+  if (!uuid.safeParse(carId).success || !/^[1-9]\d{0,18}$/.test(imageId))
     redirect('/admin?error=invalid-id')
   const back = '/admin/cars/' + carId + '/edit'
   const { data: photo } = await supabase.from('car_images')

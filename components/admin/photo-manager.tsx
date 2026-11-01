@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { ImagePlus, Star, Trash2 } from 'lucide-react'
 import { removeCarPhoto, setMainPhoto, uploadCarPhoto } from '@/app/admin/actions'
-export type ManagedImage = {id: string; image_url: string; is_main: boolean}
+export type ManagedImage = {id: number; image_url: string; is_main: boolean}
 export function PhotoManager({carId, photos}: {carId: string; photos: ManagedImage[]}) {
   return <section className="space-y-5 rounded-2xl border bg-white p-5 shadow-sm sm:p-8">
     <div><h2 className="text-lg font-bold">Fotoğraf galerisi</h2><p className="mt-1 text-xs text-slate-500">JPEG / PNG / WebP • Maksimum 5 MB • En fazla 8 fotoğraf</p></div>
