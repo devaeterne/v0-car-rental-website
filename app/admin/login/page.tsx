@@ -6,6 +6,7 @@ export default async function LoginPage({searchParams}: {searchParams:Promise<{e
   const {error} = await searchParams
   const message = error === 'config' ? 'Admin yapılandırması eksik.'
     : error === 'access' ? 'Bu hesabın yönetici yetkisi yok.'
+    : error === 'auth' ? 'Supabase giriş doğrulaması başarısız. Şifrenizi kontrol edin.'
     : error ? 'Kullanıcı adı veya şifre hatalı.' : null
   return <div className="flex min-h-screen items-center justify-center bg-[#15171a] px-4 py-10">
     <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl sm:p-10">
@@ -16,7 +17,7 @@ export default async function LoginPage({searchParams}: {searchParams:Promise<{e
       </div>
       {message && <p role="alert" className="mb-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{message}</p>}
       <form action={loginAdmin} className="space-y-5">
-        <div><label htmlFor="username" className="mb-2 block text-sm font-semibold">Kullanıcı adı</label><input id="username" name="username" required autoComplete="username" className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-amber-500"/></div>
+        <div><label htmlFor="username" className="mb-2 block text-sm font-semibold">Kullanıcı adı veya e-posta</label><input id="username" name="username" required autoComplete="username" className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-amber-500"/></div>
         <div><label htmlFor="password" className="mb-2 block text-sm font-semibold">Şifre</label><input id="password" name="password" type="password" required autoComplete="current-password" className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-amber-500"/></div>
         <button type="submit" className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#17191c] px-5 py-3.5 font-semibold text-white hover:bg-slate-700"><LockKeyhole className="h-4 w-4"/> Giriş yap</button>
       </form>

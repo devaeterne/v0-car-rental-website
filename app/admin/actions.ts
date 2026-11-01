@@ -22,12 +22,23 @@ export async function loginAdmin(form: FormData) {
   const username = String(form.get('username') || '').trim().toLowerCase()
   const password = String(form.get('password') || '')
   const expected = process.env.XROYAL_ADMIN_USERNAME?.trim().toLowerCase()
-  const email = process.env.XROYAL_ADMIN_EMAIL
+  const email = process.env.XROYAL_ADMIN_EMAIL?.trim()
   if (!expected || !email) redirect('/admin/login?error=config')
-  if (username !== expected || !password) redirect('/admin/login?error=credentials')
+  // Both the configured admin alias and its Auth email are valid login identifiers.
+  if ((username !== expected && username !== email.toLowerCase()) || !password) {
+    redirect('/admin/login?error=credentials')
+  }
   const client = await createClient()
   const { data, error } = await client.auth.signInWithPassword({ email, password })
-  if (error || !data.user) redirect('/admin/login?error=credentials')
+  if (error) {
+    // No credential or token logging: code/status are enough for server diagnosis.
+    console.error('[xroyal-admin] Supabase Auth rejected login', {
+      code: error.code ?? 'unknown',
+      status: error.status ?? null,
+    })
+    redirect('/admin/login?error=auth')
+  }
+  if (!data.user) redirect('/admin/login?error=auth')
   const { data: member, error: accessError } = await client.from('admin_users')
     .select('user_id').eq('user_id', data.user.id).maybeSingle()
   if (accessError || !member) {
