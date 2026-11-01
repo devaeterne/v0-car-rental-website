@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import { getSiteSettings, telHref, whatsappHref } from '@/lib/site-content'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -29,8 +30,6 @@ const categoryLabels: Record<string, string> = {
 const transmissionLabels: Record<string, string> = { automatic: 'Otomatik', manual: 'Manuel' }
 const fuelLabels: Record<string, string> = { petrol: 'Benzin', diesel: 'Dizel', electric: 'Elektrik', hybrid: 'Hibrit' }
 
-const PHONE_NUMBER = '+905359226099'
-
 export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const { id } = await params
   const supabase = await createClient()
@@ -47,11 +46,13 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 
   if (error || !car) notFound()
 
+  const company = await getSiteSettings()
+
   const images = car.car_images || []
   const mainImageUrl = images.find((img: any) => img.is_main)?.image_url || images[0]?.image_url
 
   const whatsappMessage = encodeURIComponent(`Merhaba, ${car.brand} aracını kiralamak istiyorum.`)
-  const whatsappUrl = `https://wa.me/${PHONE_NUMBER.replace(/\+/g, '')}?text=${whatsappMessage}`
+  const whatsappUrl = whatsappHref(company.whatsapp_phone) + '?text=' + whatsappMessage
 
   return (
     <div className="relative min-h-screen bg-slate-50/50">
@@ -167,7 +168,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                       WhatsApp ile Sorgula
                     </Button>
                   </a>
-                  <a href={`tel:${PHONE_NUMBER}`} className="block transform transition hover:scale-[1.02] active:scale-[0.98]">
+                  <a href={telHref(company.phone)} className="block transform transition hover:scale-[1.02] active:scale-[0.98]">
                     <Button size="lg" variant="outline" className="w-full font-bold h-16 text-lg rounded-2xl border-2 border-slate-700 bg-transparent hover:bg-slate-800 text-white hover:text-white">
                       <Phone className="mr-2 h-5 w-5" /> Hemen Arayın
                     </Button>
