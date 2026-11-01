@@ -13,7 +13,7 @@ export default async function AdminHome({searchParams}: {searchParams:Promise<{e
   const { error: actionError } = await searchParams
   const {supabase} = await requireAdmin()
   const {data, error} = await supabase.from('cars')
-    .select('id,brand,model,year,price_per_day,available,car_images(image_url,is_main)')
+    .select('id,brand,model,year,price_per_day,available,car_images!car_images_car_id_fkey(image_url,is_main)')
     .order('created_at',{ascending:false})
   const cars = (data || []) as CarRow[]
   const active = cars.filter(c => c.available).length

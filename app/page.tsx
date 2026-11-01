@@ -14,7 +14,7 @@ export default async function HomePage() {
     .from('cars')
     .select(`
       *,
-      car_images (
+      car_images!car_images_car_id_fkey (
         id,
         image_url,
         is_main

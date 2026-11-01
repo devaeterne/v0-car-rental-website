@@ -10,7 +10,7 @@ export default async function EditCarPage({params,searchParams}:Props) {
   const query = await searchParams
   const {supabase} = await requireAdmin()
   const {data:car,error} = await supabase.from('cars')
-    .select('id,brand,model,year,category,price_per_day,seats,transmission,fuel_type,available,features,car_images(id,image_url,is_main)')
+    .select('id,brand,model,year,category,price_per_day,seats,transmission,fuel_type,available,features,car_images!car_images_car_id_fkey(id,image_url,is_main)')
     .eq('id',id).single()
   if (error || !car) notFound()
   const message = query.created ? 'Araç oluşturuldu; şimdi fotoğraf ekleyebilirsiniz.'

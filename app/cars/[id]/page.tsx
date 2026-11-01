@@ -39,7 +39,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
     .from('cars')
     .select(`
       *,
-      car_images (id, image_url, is_main)
+      car_images!car_images_car_id_fkey (id, image_url, is_main)
     `)
     .eq('id', id)
     .eq('available', true)

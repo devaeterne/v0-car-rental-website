@@ -9,7 +9,7 @@ export async function GET() {
   if (!url || !key) return new Response('Feed unavailable', {status:503})
   const supabase = createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}})
   const {data,error} = await supabase.from('cars')
-    .select('id,name,brand,model,year,category,price_per_day,transmission,fuel_type,seats,available,car_images(image_url,is_main)')
+    .select('id,name,brand,model,year,category,price_per_day,transmission,fuel_type,seats,available,car_images!car_images_car_id_fkey(image_url,is_main)')
     .eq('available',true).order('brand')
   if (error) return new Response('Feed unavailable', {status:503})
   return new Response(serializeCars((data || []) as XmlCar[],

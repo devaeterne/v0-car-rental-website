@@ -24,7 +24,7 @@ async function CarsList({ searchParams }: { searchParams: CarsPageProps['searchP
     .from('cars')
     .select(`
       *,
-      car_images (
+      car_images!car_images_car_id_fkey (
         image_url,
         is_main
       )
