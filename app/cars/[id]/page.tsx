@@ -42,6 +42,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
       car_images (id, image_url, is_main)
     `)
     .eq('id', id)
+    .eq('available', true)
     .single()
 
   if (error || !car) notFound()
