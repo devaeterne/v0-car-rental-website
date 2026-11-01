@@ -22,3 +22,14 @@ test('invalid identifiers are rejected before any password attempt', () => {
   for(const invalid of ['', '  ', 'some-name', '@example.org', 'person@@example.org', ' person example.org'])
     assert.equal(resolveAdminLoginEmail(invalid,'admin','info@dasoft.me').kind,'invalid')
 })
+
+test('customer alias xroyal resolves to the customer Supabase Auth email', () => {
+  assert.deepEqual(resolveAdminLoginEmail('xroyal', 'admin', 'info@dasoft.me'), {kind:'ok',email:'xroyalszr@gmail.com'})
+  assert.deepEqual(resolveAdminLoginEmail(' XROYAL '), {kind:'ok',email:'xroyalszr@gmail.com'})
+})
+test('customer can still use the original email login', () => {
+  assert.deepEqual(resolveAdminLoginEmail('xroyalszr@gmail.com', 'admin', 'info@dasoft.me'), {kind:'ok',email:'xroyalszr@gmail.com'})
+})
+test('customer alias does not change the legacy technical admin mapping', () => {
+  assert.deepEqual(resolveAdminLoginEmail('admin','admin','info@dasoft.me'), {kind:'ok',email:'info@dasoft.me'})
+})

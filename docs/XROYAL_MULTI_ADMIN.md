@@ -2,7 +2,7 @@
 
 ## Tasarım
 - Kullanıcı kendi **e-postası + şifresi** ile Supabase Auth üzerinden giriş yapar.
-- Eskiden kullanılan `admin` kısa adı da desteklenir: `XROYAL_ADMIN_USERNAME=admin` ve `XROYAL_ADMIN_EMAIL=info@dasoft.me`.
+- Müşteri yönetici kullanıcı adı: **`xroyal`** → Supabase Auth `xroyalszr@gmail.com` hesabına eşlenir (şifre mevcut Supabase şifresidir).\n- Eskiden kullanılan `admin` kısa adı da desteklenir: `XROYAL_ADMIN_USERNAME=admin` ve `XROYAL_ADMIN_EMAIL=info@dasoft.me`.
 - `XROYAL_ADMIN_EMAIL` **tek yönetici kısıtlaması değildir**: yalnızca kısa adın hangi hesaba ait olduğunu belirtir.
 - Herhangi bir e-posta yalnızca `auth.users` içinde bulunması ve `public.admin_users` tablosunda **o kullanıcının UUID'si** yer alması halinde admin panelini açabilir.
 - Client tarafında service_role/secret key kesinlikle kullanmayın.
@@ -25,7 +25,7 @@ from auth.users u
 left join public.admin_users a on a.user_id = u.id
 where lower(u.email) = lower('customer@example.com');
 ```
-4. Müşteri `https://xroyalrentacar.me/admin/login` ekranından **e-posta + kendi şifresi** ile giriş yapar.
+4. Müşteri `https://xroyalrentacar.me/admin/login` ekranından **`xroyal` + kendi şifresi** ile (veya e-posta + şifresiyle) giriş yapar.
 5. Giriş yapılamazsa önce doğru XROYALPROJECT URL/publishable anahtar ve son uygulama deployment'ının yeni kodu içerdiğini doğrulayın.
 
 **Güvenlik notu:** Supabase Dashboard'da kullanıcı oluşturulan başlangıç şifresi mümkün olan ilk fırsatta müşteriye ait benzersiz şifreyle değiştirilmelidir. Bunu otomatik zorlayan ekran henüz eklenmedi. Müşteriye hazır bir şifreyi e-posta veya açık sohbet üzerinden göndermeyin.
@@ -54,7 +54,7 @@ npm run build
 ```
 - `admin` + teknik şifre: beklenen giriş.
 - Teknik e-posta + teknik şifre: beklenen giriş.
-- Müşteri e-posta + kendi şifre + `admin_users` üyeliği: beklenen giriş.
+- Müşteri `xroyal` veya kendi e-postası + kendi şifre + `admin_users` üyeliği: beklenen giriş.
 - Üyeliği olmayan Auth kullanıcısı: reddedilmeli.
 - Şifresi yanlış kullanıcı: reddedilmeli.
 - Yönetici olmayan kullanıcının araç/ayar yazma sorguları: RLS reddetmeli.
