@@ -33,3 +33,13 @@ test('customer can still use the original email login', () => {
 test('customer alias does not change the legacy technical admin mapping', () => {
   assert.deepEqual(resolveAdminLoginEmail('admin','admin','info@dasoft.me'), {kind:'ok',email:'info@dasoft.me'})
 })
+
+test('all Supabase clients accept the public publishable key variable as a fallback', async () => {
+  const { readFileSync } = await import('node:fs')
+  for (const filename of ['lib/supabase/server.ts','lib/supabase/client.ts','lib/supabase/proxy.ts']) {
+    const source = readFileSync(new URL('../' + filename, import.meta.url),'utf8')
+    assert.match(source, /NEXT_PUBLIC_SUPABASE_ANON_KEY/)
+    assert.match(source, /NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/)
+    assert.doesNotMatch(source,/SUPABASE_SERVICE_ROLE_KEY/)
+  }
+})
