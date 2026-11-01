@@ -5,9 +5,13 @@ import { HeroSection } from '@/components/hero-section'
 import { FeaturesSection } from '@/components/features-section'
 import { CarGrid } from '@/components/car-grid'
 import type { Car } from '@/lib/types'
+import { getSiteSettings, getPublicPage } from '@/lib/site-content'
+
+export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
   const supabase = await createClient()
+  const [homeContent,company] = await Promise.all([getPublicPage('ana-sayfa'),getSiteSettings()])
 
   // Veritabanından araçları ve onlara bağlı resimleri çekiyoruz
   const { data: featuredCars, error } = await supabase
@@ -34,7 +38,7 @@ export default async function HomePage() {
       
       <main className="flex-1">
         {/* Modern Karşılama Alanı */}
-        <HeroSection />
+        <HeroSection heading={homeContent?.title} intro={homeContent?.intro} whatsappPhone={company.whatsapp_phone}/>
 
         {/* Kurumsal Avantajlar (Karşılama, Sınırsız KM vb.) */}
         <div className="bg-white">
@@ -59,6 +63,7 @@ export default async function HomePage() {
             </p>
           </div>
 
+          {homeContent?.body && <p className="mb-8 max-w-3xl whitespace-pre-line text-slate-600">{homeContent.body}</p>}
           <CarGrid
             cars={(featuredCars as Car[]) || []}
             // Title ve Description zaten yukarıda özel tasarlandığı için Grid içindekileri boş geçebiliriz

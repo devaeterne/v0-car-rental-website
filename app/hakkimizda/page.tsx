@@ -3,6 +3,8 @@ import { Footer } from '@/components/footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Shield, Clock, Users, Award, MapPin, CheckCircle2 } from 'lucide-react'
 import Image from 'next/image'
+import { getPublicPage, getSiteSettings } from '@/lib/site-content'
+export const dynamic = 'force-dynamic'
 
 const values = [
   {
@@ -27,7 +29,8 @@ const values = [
   },
 ]
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [page,company] = await Promise.all([getPublicPage('hakkimizda'),getSiteSettings()])
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <Header />
@@ -40,11 +43,11 @@ export default function AboutPage() {
               PREMIUM RENT A CAR
             </span>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 uppercase leading-none">
-              Yolculuğun <br />
-              <span className="text-primary/20 stroke-primary text-transparent [-webkit-text-stroke:1px_theme(colors.primary)]">Zirve Noktası</span>
+              {page?.title ?? <>Yolculuğun <br />
+              <span className="text-primary/20 stroke-primary text-transparent [-webkit-text-stroke:1px_theme(colors.primary)]">Zirve Noktası</span></>}
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-base md:text-lg font-medium text-slate-500 leading-relaxed">
-              X Royal Rent A Car, Karadağ&apos;ın eşsiz coğrafyasını keşfetmeniz için tasarlanmış, prestij ve güveni birleştiren yeni nesil kiralama çözümüdür.
+              {page?.intro || 'X Royal Rent A Car, Karadağ’ın eşsiz coğrafyasını keşfetmeniz için tasarlanmış, prestij ve güveni birleştiren yeni nesil kiralama çözümüdür.'}
             </p>
           </div>
           
@@ -76,12 +79,8 @@ export default function AboutPage() {
               </div>
               
               <div className="space-y-6 text-slate-600 font-medium leading-relaxed">
-                <p>
-                  Karadağ&apos;ın büyüleyici başkenti Podgorica merkezli kurulan X Royal Rent A Car, bölgeye gelen misafirlerimizin en büyük ihtiyacı olan "sorunsuz mobilite" kavramını yeniden tanımlamak için yola çıktı.
-                </p>
-                <p>
-                  Amacımız, ister iş seyahati ister tatil amaçlı olsun, ziyaretçilerimize Karadağ&apos;ın her köşesini (Budva&apos;nın sahillerinden Durmitor&apos;un zirvelerine kadar) en konforlu araçlarla keşfetme imkanı sunmaktır.
-                </p>
+                {(page?.body || "Karadağ'ın büyüleyici başkenti Podgorica merkezli kurulan X Royal Rent A Car, bölgeye gelen misafirlerimizin en büyük ihtiyacı olan sorunsuz mobilite kavramını yeniden tanımlamak için yola çıktı.\n\nAmacımız, ister iş seyahati ister tatil amaçlı olsun, ziyaretçilerimize Karadağ'ın her köşesini en konforlu araçlarla keşfetme imkanı sunmaktır.")
+                  .split(/\n\s*\n/).filter(Boolean).map((paragraph,index) => <p key={index} className="whitespace-pre-line">{paragraph}</p>)}
                 
                 <ul className="grid gap-3 pt-4">
                     {['Resmi Havalimanı Teslimatı', 'Gizli Ücret Yok', 'Yeni Model Araç Filosu'].map((item) => (
@@ -130,7 +129,7 @@ export default function AboutPage() {
             <MapPin className="h-3 w-3" /> Lokasyon Bilgisi
         </div>
         <h2 className="text-4xl font-black tracking-tight text-slate-900 uppercase leading-none">
-          Podgorica / <span className="text-primary">Montenegro</span>
+          {company.location_label}
         </h2>
         <p className="text-slate-500 font-medium leading-relaxed">
           Podgorica ve Tivat Havalimanları başta olmak üzere, Karadağ genelinde 7/24 araç teslimatı ve iadesi gerçekleştiriyoruz. Ofisimize gelmenize gerek kalmadan, aracınızı terminal çıkışında teslim alabilirsiniz.
@@ -138,7 +137,7 @@ export default function AboutPage() {
         
         <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <a 
-              href="https://www.google.com/maps/place/X+Royal+Rent+a+Car/data=!4m2!3m1!1s0x0:0xdb0f0d0aeb8e23e0" 
+              href={company.map_url || "/iletisim"} 
               target="_blank" 
               rel="noopener noreferrer"
               className="px-8 py-4 bg-primary text-white font-black uppercase tracking-[0.2em] text-[11px] inline-flex items-center justify-center hover:bg-slate-900 transition-all rounded-none shadow-lg shadow-primary/20"

@@ -3,11 +3,13 @@ import { Footer } from '@/components/footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Phone, MapPin, Clock, MessageCircle, ArrowRight, Mail } from 'lucide-react'
+import { getPublicPage, getSiteSettings, telHref, whatsappHref } from '@/lib/site-content'
+export const dynamic = 'force-dynamic'
 
-const PHONE_NUMBER = '+905359226099'
-const WHATSAPP_URL = `https://wa.me/${PHONE_NUMBER.replace(/\+/g, '')}?text=${encodeURIComponent('Merhaba, araç kiralama hakkında bilgi almak istiyorum.')}`
-
-export default function ContactPage() {
+export default async function ContactPage() {
+  const [page,company] = await Promise.all([getPublicPage('iletisim'),getSiteSettings()])
+  const PHONE_NUMBER = company.phone
+  const WHATSAPP_URL = whatsappHref(company.whatsapp_phone) + '?text=' + encodeURIComponent('Merhaba, araç kiralama hakkında bilgi almak istiyorum.')
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <Header />
@@ -25,10 +27,10 @@ export default function ContactPage() {
               7/24 Kesintisiz Destek
             </span>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase mb-6">
-              Bize <span className="text-primary">Ulaşın</span>
+              {page?.title ?? <>Bize <span className="text-primary">Ulaşın</span></>}
             </h1>
             <p className="mx-auto max-w-2xl text-lg font-medium text-slate-400 leading-relaxed">
-              Karadağ seyahatiniz için profesyonel araç kiralama çözümleri. Sorularınız, özel talepleriniz veya rezervasyon desteği için yanınızdayız.
+              {page?.intro || 'Karadağ seyahatiniz için profesyonel araç kiralama çözümleri. Sorularınız, özel talepleriniz veya rezervasyon desteği için yanınızdayız.'}
             </p>
           </div>
         </section>
@@ -42,9 +44,9 @@ export default function ContactPage() {
               <ContactCard 
                 icon={Phone} 
                 title="HIZLI HAT" 
-                value="+90 535 922 60 99" 
+                value={company.phone} 
                 sub="Doğrudan arama yapın"
-                link={`tel:${PHONE_NUMBER}`}
+                link={telHref(PHONE_NUMBER)}
               />
               <ContactCard 
                 icon={MessageCircle} 
@@ -57,14 +59,14 @@ export default function ContactPage() {
               <ContactCard 
                 icon={MapPin} 
                 title="LOKASYON" 
-                value="Podgorica / Karadağ" 
+                value={company.location_label} 
                 sub="Havalimanı ve otel teslimatı"
-                link="https://www.google.com/maps/place/X+Royal+Rent+a+Car/data=!4m2!3m1!1s0x0:0xdb0f0d0aeb8e23e0"
+                link={company.map_url || undefined}
               />
               <ContactCard 
                 icon={Clock} 
                 title="ÇALIŞMA SAATLERİ" 
-                value="7 Gün / 24 Saat" 
+                value={company.opening_hours} 
                 sub="Haftanın her günü açığız"
               />
             </div>
@@ -78,7 +80,7 @@ export default function ContactPage() {
                     Hemen Rezervasyon <br /> <span className="text-primary">Oluşturun</span>
                   </h2>
                   <p className="text-slate-500 font-medium leading-relaxed mb-8">
-                    Hayalinizdeki aracı kiralamak için en hızlı yol WhatsApp üzerinden bizimle iletişime geçmektir. Ekibimiz dakikalar içinde size en uygun teklifi sunacaktır.
+                    {page?.body || 'Hayalinizdeki aracı kiralamak için en hızlı yol WhatsApp üzerinden bizimle iletişime geçmektir. Ekibimiz dakikalar içinde size en uygun teklifi sunacaktır.'}
                   </p>
 
                   <div className="space-y-4">
@@ -89,7 +91,7 @@ export default function ContactPage() {
                       </Button>
                     </a>
 
-                    <a href={`tel:${PHONE_NUMBER}`} className="block group">
+                    <a href={telHref(PHONE_NUMBER)} className="block group">
                       <Button variant="outline" className="w-full h-16 rounded-2xl border-2 border-slate-900 bg-transparent hover:bg-slate-900 hover:text-white text-slate-900 text-base font-black uppercase tracking-wider transition-all group-hover:scale-[1.02]">
                         <Phone className="mr-3 h-5 w-5" />
                         HEMEN ARA
@@ -99,7 +101,7 @@ export default function ContactPage() {
 
                   <div className="mt-8 flex items-center justify-center gap-2 text-slate-400">
                     <Mail className="h-4 w-4" />
-                    <span className="text-xs font-bold uppercase tracking-widest italic">Destek: info@xroyalrentacar.com</span>
+                    <span className="text-xs font-bold uppercase tracking-widest italic">Destek: {company.contact_email}</span>
                   </div>
                 </CardContent>
               </Card>

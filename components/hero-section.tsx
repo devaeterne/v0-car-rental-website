@@ -5,10 +5,8 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Car, MessageCircle, CheckCircle2 } from 'lucide-react'
 
-const PHONE_NUMBER = '+905359226099'
-const WHATSAPP_URL = `https://wa.me/${PHONE_NUMBER.replace(/\+/g, '')}?text=${encodeURIComponent('Merhaba, Araç kiralama hakkında bilgi almak istiyorum.')}`
-
-export function HeroSection() {
+export function HeroSection({heading,intro,whatsappPhone}: {heading?:string;intro?:string;whatsappPhone?:string}) {
+  const WHATSAPP_URL = `https://wa.me/${(whatsappPhone || '+905359226099').replace(/\D/g, '')}?text=${encodeURIComponent('Merhaba, Araç kiralama hakkında bilgi almak istiyorum.')}`
   return (
     <section className="relative overflow-hidden bg-background pt-24 pb-12 lg:pt-32 lg:pb-20">
       {/* Arka Plan Deseni (Opsiyonel - Daha Soft) */}
@@ -32,14 +30,11 @@ export function HeroSection() {
             </div>
 
             <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              <span className="block italic text-primary/80 text-2xl sm:text-3xl mb-2 font-medium">Karadağ&apos;da</span>
-              <span className="block">Premium Araç</span>
-              <span className="block text-primary">Kiralama Deneyimi</span>
+              {heading || <>Karadağ&apos;da <span className="text-primary">Premium Araç Kiralama Deneyimi</span></>}
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg text-muted-foreground mx-auto lg:mx-0">
-              X Royal Rent A Car ile Budva, Tivat ve Kotor'un tadını çıkarın.
-              Ekonomik şehir araçlarından lüks SUV modellerine kadar geniş filomuzla hizmetinizdeyiz.
+              {intro || "X Royal Rent A Car ile Budva, Tivat ve Kotor'un tadını çıkarın. Ekonomik şehir araçlarından lüks SUV modellerine kadar geniş filomuzla hizmetinizdeyiz."}
             </p>
 
             {/* CTA Butonları - Tam Ortalanmış (Mobil) / Sola Dayalı (Masaüstü) */}
