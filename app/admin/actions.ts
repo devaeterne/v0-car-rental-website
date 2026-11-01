@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/admin/auth'
 import { parseCarForm } from '@/lib/admin/car-schema'
+import { resolveAdminLoginEmail } from '@/lib/admin/login-identity.mjs'
 
 const uuid = z.string().uuid()
 const BUCKET = 'xroyal-car-images'
@@ -21,15 +22,16 @@ function refresh(carId?: string) {
 export async function loginAdmin(form: FormData) {
   const username = String(form.get('username') || '').trim().toLowerCase()
   const password = String(form.get('password') || '')
-  const expected = process.env.XROYAL_ADMIN_USERNAME?.trim().toLowerCase()
-  const email = process.env.XROYAL_ADMIN_EMAIL?.trim()
-  if (!expected || !email) redirect('/admin/login?error=config')
-  // Both the configured admin alias and its Auth email are valid login identifiers.
-  if ((username !== expected && username !== email.toLowerCase()) || !password) {
-    redirect('/admin/login?error=credentials')
-  }
+  if (!password) redirect('/admin/login?error=credentials')
+  const login = resolveAdminLoginEmail(
+    username,
+    process.env.XROYAL_ADMIN_USERNAME,
+    process.env.XROYAL_ADMIN_EMAIL,
+  )
+  if (login.kind === 'config') redirect('/admin/login?error=config')
+  if (login.kind !== 'ok') redirect('/admin/login?error=credentials')
   const client = await createClient()
-  const { data, error } = await client.auth.signInWithPassword({ email, password })
+  const { data, error } = await client.auth.signInWithPassword({ email: login.email, password })
   if (error) {
     // No credential or token logging: code/status are enough for server diagnosis.
     console.error('[xroyal-admin] Supabase Auth rejected login', {

@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test:cms": "node --test tests/cms-contract.test.mjs"
+    "test:cms": "node --test tests/cms-contract.test.mjs",
+    "test:admin-auth": "node --test tests/admin-login-identity.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
