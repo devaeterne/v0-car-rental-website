@@ -116,11 +116,11 @@ export async function Footer() {
           
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-black text-slate-600 tracking-[0.2em] uppercase">Crafted by</span>
-            <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10">
+            <a href="https://www.dasoft.me" target="_blank" rel="noopener noreferrer" aria-label="DA Software and Solutions web sitesi" className="px-3 py-1 bg-white/5 rounded-full border border-white/10 transition-colors hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
               <span className="text-[11px] font-black tracking-tighter text-white">
                 Da<span className="text-primary">Soft</span>
               </span>
-            </div>
+            </a>
           </div>
         </div>
       </div>
