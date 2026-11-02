@@ -6,8 +6,8 @@ import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { CarCard } from '@/components/car-card'
 import { CarsFilter } from '@/components/cars-filter'
-import { Spinner } from '@/components/ui/spinner'
-import { AlertCircle, CarFront } from 'lucide-react'
+
+
 import type { Car } from '@/lib/types'
 
 interface CarsPageProps {
@@ -17,12 +17,12 @@ interface CarsPageProps {
     fuel?: string
   }>
 }
-async function CarsList({ searchParams, locale }: { searchParams: CarsPageProps['searchParams']; locale:SiteLocale }) {
-  const params = await searchParams
+async function CarsList({ locale }: { locale:SiteLocale }) {
+
   const supabase = await createClient()
 
   // Araçları ve onlara bağlı görselleri tek sorguda çekiyoruz
-  let carQuery = supabase
+  const carQuery = supabase
     .from('cars')
     .select(`
       *,
@@ -43,17 +43,13 @@ async function CarsList({ searchParams, locale }: { searchParams: CarsPageProps[
 
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-      {cars.map((car: any) => {
+      {cars.map((car: Car) => {
         // İlişkili tablodan gelen görselleri kontrol et
-        const images = car.car_images || []
-        const mainImage = images.find((img: any) => img.is_main)?.image_url
-          || images[0]?.image_url
-          || '/placeholder-car.png' // Kendi logonuz veya bir araç resmi
 
         return (
           <CarCard locale={locale}
             key={car.id}
-            car={{ ...car, image_url: mainImage }}
+            car={car}
           />
         )
       })}
@@ -97,7 +93,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
               </div>
             }
           >
-            <CarsList searchParams={searchParams} locale={locale}/>
+            <CarsList locale={locale}/>
           </Suspense>
         </div>
       </main>

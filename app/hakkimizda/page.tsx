@@ -2,7 +2,7 @@ import { getSiteLocale } from '@/lib/i18n-server'
 import { t } from '@/lib/i18n'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { Card, CardContent } from '@/components/ui/card'
+
 import { Shield, Clock, Users, Award, MapPin, CheckCircle2 } from 'lucide-react'
 import Image from 'next/image'
 import { getPublicPage, getSiteSettings } from '@/lib/site-content'

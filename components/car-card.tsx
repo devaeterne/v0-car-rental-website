@@ -31,7 +31,7 @@ const categoryLabels: Record<string, string> = {
 }
 export function CarCard({ car, locale }: CarCardProps) {
   // car_images içinden is_main olanı bul, yoksa ilk resmi al
-  const displayImage = car.car_images?.find((img: any) => img.is_main)?.image_url 
+  const displayImage = car.car_images?.find((img: {is_main:boolean;image_url:string}) => img.is_main)?.image_url
                     || car.car_images?.[0]?.image_url;
 
   return (
@@ -54,7 +54,7 @@ export function CarCard({ car, locale }: CarCardProps) {
             <ImageIcon className="h-10 w-10 stroke-[1.5] opacity-20" />
           </div>
         )}
-        
+
         {/* Floating Category Badge */}
         <Badge className={`absolute left-4 top-4 border backdrop-blur-md shadow-sm px-3 py-1 text-[10px] font-black uppercase tracking-[0.1em] ${categoryColors[car.category] || 'bg-slate-800 text-white'}`}>
           {t(locale, categoryLabels[car.category] || car.category)}
@@ -97,7 +97,7 @@ export function CarCard({ car, locale }: CarCardProps) {
               </span>
             </div>
           </div>
-          
+
           <Link href={`/cars/${car.id}`} className="group/btn">
              <div className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center transition-all group-hover/btn:bg-primary group-hover/btn:border-primary">
                 <ArrowUpRight className="h-4 w-4 text-slate-400 transition-colors group-hover/btn:text-white" />

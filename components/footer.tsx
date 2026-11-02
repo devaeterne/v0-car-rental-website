@@ -2,7 +2,7 @@ import { getSiteLocale } from '@/lib/i18n-server'
 import { t } from '@/lib/i18n'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook } from 'lucide-react'
+import { Phone, MapPin, ArrowRight, Instagram, Facebook } from 'lucide-react'
 
 import { getSiteSettings, getFooterPages, telHref } from '@/lib/site-content'
 

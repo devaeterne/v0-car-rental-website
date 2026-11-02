@@ -1,10 +1,11 @@
 import { getSiteLocale } from '@/lib/i18n-server'
 import { t } from '@/lib/i18n'
+import type { LucideIcon } from 'lucide-react'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Phone, MapPin, Clock, MessageCircle, ArrowRight, Mail } from 'lucide-react'
+import { Phone, MapPin, Clock, MessageCircle, Mail } from 'lucide-react'
 import { getPublicPage, getSiteSettings, telHref, whatsappHref } from '@/lib/site-content'
 export const dynamic = 'force-dynamic'
 
@@ -134,7 +135,7 @@ export default async function ContactPage() {
 }
 
 // Özel Kart Bileşeni
-function ContactCard({ icon: Icon, title, value, sub, link, isWhatsApp }: any) {
+function ContactCard({ icon: Icon, title, value, sub, link, isWhatsApp }: {icon:LucideIcon;title:string;value:string;sub:string;link?:string;isWhatsApp?:boolean}) {
   const content = (
     <Card className={cn(
       "group border-none shadow-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 overflow-hidden",
@@ -175,6 +176,6 @@ function ContactCard({ icon: Icon, title, value, sub, link, isWhatsApp }: any) {
 }
 
 // Yardımcı fonksiyon
-function cn(...classes: any[]) {
+function cn(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }

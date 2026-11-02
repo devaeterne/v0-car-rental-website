@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "eslint .",
     "test:cms": "node --test tests/cms-contract.test.mjs",
-    "test:admin-auth": "node --test tests/admin-login-identity.test.mjs"
+    "test:admin-auth": "node --test tests/admin-login-identity.test.mjs",
+    "typecheck": "tsc --noEmit --incremental false",
+    "test": "node --test tests/*.test.mjs",
+    "ci:local": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -70,6 +73,8 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.2.4",
     "postcss": "^8.5",
     "tailwindcss": "^4.2.0",
     "tw-animate-css": "1.3.3",

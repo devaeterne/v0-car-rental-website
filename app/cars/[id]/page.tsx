@@ -52,7 +52,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const company = await getSiteSettings()
 
   const images = car.car_images || []
-  const mainImageUrl = images.find((img: any) => img.is_main)?.image_url || images[0]?.image_url
+  const mainImageUrl = images.find((img: {is_main:boolean;image_url:string}) => img.is_main)?.image_url || images[0]?.image_url
 
   const whatsappMessage = encodeURIComponent(locale === 'en' ? `Hello, I would like to rent the ${car.brand}.` : locale === 'cnr' ? `Poštovani, želim da iznajmim vozilo ${car.brand}.` : `Merhaba, ${car.brand} aracını kiralamak istiyorum.`)
   const whatsappUrl = whatsappHref(company.whatsapp_phone) + '?text=' + whatsappMessage

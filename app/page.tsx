@@ -1,5 +1,6 @@
 import { getSiteLocale } from '@/lib/i18n-server'
 import { t } from '@/lib/i18n'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
@@ -73,12 +74,12 @@ export default async function HomePage() {
           />
 
           <div className="mt-16 text-center">
-            <a href="/cars">
+            <Link href="/cars">
               <button className="group relative px-12 py-4 bg-slate-900 text-white font-black uppercase tracking-widest text-xs transition-all hover:bg-primary overflow-hidden">
                 <span className="relative z-10">{t(locale, 'Tüm Filoyu Görüntüle')}</span>
                 <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               </button>
-            </a>
+            </Link>
           </div>
         </section>
       </main>
