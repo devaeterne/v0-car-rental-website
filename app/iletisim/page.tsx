@@ -1,3 +1,5 @@
+import { getSiteLocale } from '@/lib/i18n-server'
+import { t } from '@/lib/i18n'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { Card, CardContent } from '@/components/ui/card'
@@ -7,13 +9,14 @@ import { getPublicPage, getSiteSettings, telHref, whatsappHref } from '@/lib/sit
 export const dynamic = 'force-dynamic'
 
 export default async function ContactPage() {
+  const locale = await getSiteLocale()
   const [page,company] = await Promise.all([getPublicPage('iletisim'),getSiteSettings()])
   const PHONE_NUMBER = company.phone
-  const WHATSAPP_URL = whatsappHref(company.whatsapp_phone) + '?text=' + encodeURIComponent('Merhaba, araç kiralama hakkında bilgi almak istiyorum.')
+  const WHATSAPP_URL = whatsappHref(company.whatsapp_phone) + '?text=' + encodeURIComponent(t(locale,'Merhaba, araç kiralama hakkında bilgi almak istiyorum.'))
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <Header />
-      
+
       <main className="flex-1 pt-20">
         {/* Modern Hero Section */}
         <section className="relative py-24 bg-slate-900 overflow-hidden">
@@ -21,16 +24,16 @@ export default async function ContactPage() {
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:40px_40px]" />
           </div>
-          
+
           <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10 text-center">
             <span className="text-[11px] font-black uppercase tracking-[0.4em] text-primary mb-4 inline-block">
-              7/24 Kesintisiz Destek
+              {t(locale, '7/24 Kesintisiz Destek')}
             </span>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase mb-6">
-              {page?.title ?? <>Bize <span className="text-primary">Ulaşın</span></>}
+              {locale !== 'tr' ? t(locale,'Bize Ulaşın') : page?.title ?? <>Bize <span className="text-primary">Ulaşın</span></>}
             </h1>
             <p className="mx-auto max-w-2xl text-lg font-medium text-slate-400 leading-relaxed">
-              {page?.intro || 'Karadağ seyahatiniz için profesyonel araç kiralama çözümleri. Sorularınız, özel talepleriniz veya rezervasyon desteği için yanınızdayız.'}
+              {locale !== 'tr' ? (locale === 'en' ? 'Professional car rental for your journey in Montenegro. Contact us for questions, special requests or reservation support.' : 'Profesionalno iznajmljivanje vozila u Crnoj Gori. Kontaktirajte nas za pitanja, posebne zahtjeve ili rezervacije.') : page?.intro || 'Karadağ seyahatiniz için profesyonel araç kiralama çözümleri. Sorularınız, özel talepleriniz veya rezervasyon desteği için yanınızdayız.'}
             </p>
           </div>
         </section>
@@ -38,36 +41,36 @@ export default async function ContactPage() {
         {/* Contact Info Grid */}
         <section className="py-24 px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="grid gap-12 lg:grid-cols-12 items-start">
-            
+
             {/* Sol Taraf: İletişim Kartları */}
             <div className="lg:col-span-7 grid gap-6 sm:grid-cols-2">
-              <ContactCard 
-                icon={Phone} 
-                title="HIZLI HAT" 
-                value={company.phone} 
-                sub="Doğrudan arama yapın"
+              <ContactCard
+                icon={Phone}
+                title={t(locale,"HIZLI HAT")}
+                value={company.phone}
+                sub={t(locale,"Doğrudan arama yapın")}
                 link={telHref(PHONE_NUMBER)}
               />
-              <ContactCard 
-                icon={MessageCircle} 
-                title="WHATSAPP" 
-                value="Mesaj Gönder" 
-                sub="Anlık bilgi ve teklif alın"
+              <ContactCard
+                icon={MessageCircle}
+                title="WHATSAPP"
+                value={t(locale,"Mesaj Gönder")}
+                sub={t(locale,"Anlık bilgi ve teklif alın")}
                 link={WHATSAPP_URL}
                 isWhatsApp
               />
-              <ContactCard 
-                icon={MapPin} 
-                title="LOKASYON" 
-                value={company.location_label} 
-                sub="Havalimanı ve otel teslimatı"
+              <ContactCard
+                icon={MapPin}
+                title={t(locale,"LOKASYON")}
+                value={company.location_label}
+                sub={t(locale,"Havalimanı ve otel teslimatı")}
                 link={company.map_url || undefined}
               />
-              <ContactCard 
-                icon={Clock} 
-                title="ÇALIŞMA SAATLERİ" 
-                value={company.opening_hours} 
-                sub="Haftanın her günü açığız"
+              <ContactCard
+                icon={Clock}
+                title={t(locale,"ÇALIŞMA SAATLERİ")}
+                value={company.opening_hours}
+                sub={t(locale,"Haftanın her günü açığız")}
               />
             </div>
 
@@ -77,24 +80,24 @@ export default async function ContactPage() {
                 <div className="h-3 bg-primary w-full" />
                 <CardContent className="p-10">
                   <h2 className="text-3xl font-black tracking-tight text-slate-900 uppercase mb-4 leading-tight">
-                    Hemen Rezervasyon <br /> <span className="text-primary">Oluşturun</span>
+                    {t(locale, 'Hemen Rezervasyon')} <br /> <span className="text-primary">{t(locale, 'Oluşturun')}</span>
                   </h2>
                   <p className="text-slate-500 font-medium leading-relaxed mb-8">
-                    {page?.body || 'Hayalinizdeki aracı kiralamak için en hızlı yol WhatsApp üzerinden bizimle iletişime geçmektir. Ekibimiz dakikalar içinde size en uygun teklifi sunacaktır.'}
+                    {locale !== 'tr' ? (locale === 'en' ? 'The fastest way to reserve your car is to contact us on WhatsApp. Our team will help you find the right offer.' : 'Najbrži način da rezervišete vozilo je putem WhatsAppa. Naš tim će vam pomoći da pronađete najbolju ponudu.') : page?.body || 'Hayalinizdeki aracı kiralamak için en hızlı yol WhatsApp üzerinden bizimle iletişime geçmektir. Ekibimiz dakikalar içinde size en uygun teklifi sunacaktır.'}
                   </p>
 
                   <div className="space-y-4">
                     <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="block group">
                       <Button className="w-full h-16 rounded-2xl bg-[#25D366] hover:bg-[#1fb355] text-white text-base font-black uppercase tracking-wider shadow-lg shadow-[#25D366]/20 transition-all group-hover:scale-[1.02]">
                         <MessageCircle className="mr-3 h-6 w-6" />
-                        WHATSAPP İLE BAĞLAN
+                        {t(locale, 'WHATSAPP İLE BAĞLAN')}
                       </Button>
                     </a>
 
                     <a href={telHref(PHONE_NUMBER)} className="block group">
                       <Button variant="outline" className="w-full h-16 rounded-2xl border-2 border-slate-900 bg-transparent hover:bg-slate-900 hover:text-white text-slate-900 text-base font-black uppercase tracking-wider transition-all group-hover:scale-[1.02]">
                         <Phone className="mr-3 h-5 w-5" />
-                        HEMEN ARA
+                        {t(locale, 'HEMEN ARA')}
                       </Button>
                     </a>
                   </div>

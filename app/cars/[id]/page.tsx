@@ -1,3 +1,5 @@
+import { getSiteLocale } from '@/lib/i18n-server'
+import { t } from '@/lib/i18n'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -31,6 +33,7 @@ const transmissionLabels: Record<string, string> = { automatic: 'Otomatik', manu
 const fuelLabels: Record<string, string> = { petrol: 'Benzin', diesel: 'Dizel', electric: 'Elektrik', hybrid: 'Hibrit' }
 
 export default async function CarDetailPage({ params }: CarDetailPageProps) {
+  const locale = await getSiteLocale()
   const { id } = await params
   const supabase = await createClient()
 
@@ -51,7 +54,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const images = car.car_images || []
   const mainImageUrl = images.find((img: any) => img.is_main)?.image_url || images[0]?.image_url
 
-  const whatsappMessage = encodeURIComponent(`Merhaba, ${car.brand} aracını kiralamak istiyorum.`)
+  const whatsappMessage = encodeURIComponent(locale === 'en' ? `Hello, I would like to rent the ${car.brand}.` : locale === 'cnr' ? `Poštovani, želim da iznajmim vozilo ${car.brand}.` : `Merhaba, ${car.brand} aracını kiralamak istiyorum.`)
   const whatsappUrl = whatsappHref(company.whatsapp_phone) + '?text=' + whatsappMessage
 
   return (
@@ -64,7 +67,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
           {/* GERİ DÖNÜŞ BUTONU */}
           <Link href="/cars">
             <Button variant="ghost" className="mb-8 gap-2 hover:bg-white text-slate-600 transition-all">
-              <ArrowLeft className="h-4 w-4" /> Araç Listesine Dön
+              <ArrowLeft className="h-4 w-4" /> {t(locale, 'Araç Listesine Dön')}
             </Button>
           </Link>
 
@@ -87,7 +90,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                   <div className="bg-blue-50 p-3 rounded-2xl mb-3">
                     <Users className="h-6 w-6 text-blue-600" />
                   </div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Kapasite</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t(locale, 'Kapasite')}</span>
                   <span className="text-base font-black text-slate-800">{car.seats} Koltuk</span>
                 </div>
 
@@ -95,16 +98,16 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                   <div className="bg-orange-50 p-3 rounded-2xl mb-3">
                     <Settings2 className="h-6 w-6 text-orange-600" />
                   </div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Şanzıman</span>
-                  <span className="text-base font-black text-slate-800">{transmissionLabels[car.transmission] || car.transmission}</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t(locale, 'Şanzıman')}</span>
+                  <span className="text-base font-black text-slate-800">{t(locale,transmissionLabels[car.transmission] || car.transmission)}</span>
                 </div>
 
                 <div className="flex flex-col items-center justify-center rounded-3xl bg-white border border-slate-100 p-6 shadow-sm transition-all hover:shadow-md">
                   <div className="bg-green-50 p-3 rounded-2xl mb-3">
                     <Fuel className="h-6 w-6 text-green-600" />
                   </div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Yakıt</span>
-                  <span className="text-base font-black text-slate-800">{fuelLabels[car.fuel_type] || car.fuel_type}</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t(locale, 'Yakıt')}</span>
+                  <span className="text-base font-black text-slate-800">{t(locale,fuelLabels[car.fuel_type] || car.fuel_type)}</span>
                 </div>
               </div>
             </div>
@@ -113,7 +116,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
             <div className="lg:col-span-5 space-y-6">
               <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
                 <Badge className={`px-4 py-1.5 rounded-full border-none shadow-sm text-xs font-bold uppercase tracking-wider ${categoryColors[car.category]}`}>
-                  {categoryLabels[car.category]}
+                  {t(locale,categoryLabels[car.category] || car.category)}
                 </Badge>
 
                 <h1 className="mt-4 text-5xl font-black tracking-tight text-slate-900 leading-none">
@@ -121,13 +124,13 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                 </h1>
                 <p className="mt-2 text-slate-400 font-medium flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  X Royal Güvencesiyle Kirala
+                  {t(locale, 'X Royal Güvencesiyle Kirala')}
                 </p>
 
                 <div className="mt-8 flex items-end gap-2">
                   <div className="flex items-baseline gap-1">
                     <span className="text-5xl font-black text-primary italic">€{car.price_per_day}</span>
-                    <span className="text-slate-400 font-bold uppercase text-xs tracking-[0.2em] ml-1">/ Günlük</span>
+                    <span className="text-slate-400 font-bold uppercase text-xs tracking-[0.2em] ml-1">{t(locale, '/ Günlük')}</span>
                   </div>
                 </div>
               </div>
@@ -146,8 +149,8 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                           <item.icon className="h-6 w-6" />
                         </div>
                         <div>
-                          <p className="font-black text-sm text-slate-800">{item.label}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                          <p className="font-black text-sm text-slate-800">{t(locale,item.label)}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">{t(locale,item.desc)}</p>
                         </div>
                       </div>
                     ))}
@@ -157,26 +160,26 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 
               {/* REZERVASYON AKSİYONLARI */}
               <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-slate-200">
-                <h3 className="text-2xl font-black mb-2 italic">Hızlı Rezervasyon</h3>
+                <h3 className="text-2xl font-black mb-2 italic">{t(locale, 'Hızlı Rezervasyon')}</h3>
                 <p className="mb-8 text-slate-400 text-sm leading-relaxed">
-                  Müsaitlik durumunu öğrenmek ve hemen ayırtmak için 7/24 bize ulaşabilirsiniz.
+                  {t(locale, 'Müsaitlik durumunu öğrenmek ve hemen ayırtmak için 7/24 bize ulaşabilirsiniz.')}
                 </p>
 
                 <div className="space-y-4">
                   <a href={whatsappUrl} target="_blank" className="block transform transition hover:scale-[1.02] active:scale-[0.98]">
                     <Button size="lg" className="w-full bg-[#25D366] hover:bg-[#1ebd5b] text-white font-black h-16 text-lg rounded-2xl">
-                      WhatsApp ile Sorgula
+                      {t(locale, 'WhatsApp ile Sorgula')}
                     </Button>
                   </a>
                   <a href={telHref(company.phone)} className="block transform transition hover:scale-[1.02] active:scale-[0.98]">
                     <Button size="lg" variant="outline" className="w-full font-bold h-16 text-lg rounded-2xl border-2 border-slate-700 bg-transparent hover:bg-slate-800 text-white hover:text-white">
-                      <Phone className="mr-2 h-5 w-5" /> Hemen Arayın
+                      <Phone className="mr-2 h-5 w-5" /> {t(locale, 'Hemen Arayın')}
                     </Button>
                   </a>
                 </div>
 
                 <div className="mt-6 flex items-center justify-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                  <ShieldCheck className="h-4 w-4 text-primary" /> Tam Sigorta & 7/24 Destek Dahildir
+                  <ShieldCheck className="h-4 w-4 text-primary" /> {t(locale, 'Tam Sigorta & 7/24 Destek Dahildir')}
                 </div>
               </div>
 

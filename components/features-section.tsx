@@ -1,3 +1,4 @@
+import { t, type SiteLocale } from '@/lib/i18n'
 import { Shield, Clock, MapPin, Headphones, ArrowUpRight } from 'lucide-react'
 
 const features = [
@@ -27,7 +28,7 @@ const features = [
   },
 ]
 
-export function FeaturesSection() {
+export function FeaturesSection({locale}: {locale:SiteLocale}) {
   return (
     <section className="py-24 relative overflow-hidden bg-white">
       {/* Arka Plan Dekorasyonu */}
@@ -38,21 +39,21 @@ export function FeaturesSection() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
         <div className="flex flex-col items-center text-center mb-20">
           <span className="text-[11px] font-black uppercase tracking-[0.4em] text-primary mb-4 bg-primary/5 px-4 py-1 rounded-full">
-            Neden Biz?
+            {t(locale, 'Neden Biz?')}
           </span>
           <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
-            X Royal <span className="text-primary">Farkını</span> Yaşayın
+            X Royal <span className="text-primary">{t(locale, 'Farkını')}</span> {t(locale, 'Yaşayın')}
           </h2>
           <div className="mt-4 h-1.5 w-24 bg-primary rounded-full" />
           <p className="mt-6 max-w-2xl text-base font-medium text-slate-500 leading-relaxed">
-            Karadağ seyahatinizde araç kiralamanın ötesinde, konforlu ve prestijli bir karşılama deneyimi sunuyoruz.
+            {t(locale, 'Karadağ seyahatinizde araç kiralamanın ötesinde, konforlu ve prestijli bir karşılama deneyimi sunuyoruz.')}
           </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (
             <div
-              key={feature.title}
+              key={t(locale, feature.title)}
               className="group relative p-8 transition-all duration-500 hover:-translate-y-2"
             >
               {/* Kart Arka Planı */}
@@ -64,19 +65,19 @@ export function FeaturesSection() {
                 </div>
                 
                 <span className="block text-[10px] font-black text-primary/40 uppercase tracking-widest mb-2">
-                  {feature.highlight}
+                  {t(locale,feature.highlight)}
                 </span>
                 
                 <h3 className="mb-3 text-xl font-black tracking-tight text-slate-900">
-                  {feature.title}
+                  {t(locale, feature.title)}
                 </h3>
                 
                 <p className="text-sm font-medium leading-relaxed text-slate-500 mb-6">
-                  {feature.description}
+                  {t(locale,feature.description)}
                 </p>
 
                 <div className="flex items-center text-[11px] font-bold text-slate-900 uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
-                  Detayları Keşfet <ArrowUpRight className="ml-1 h-3 w-3 text-primary" />
+                  {t(locale, 'Detayları Keşfet')} <ArrowUpRight className="ml-1 h-3 w-3 text-primary" />
                 </div>
               </div>
 

@@ -1,3 +1,5 @@
+import { getSiteLocale } from '@/lib/i18n-server'
+import { t, type SiteLocale } from '@/lib/i18n'
 import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { Header } from '@/components/header'
@@ -15,7 +17,7 @@ interface CarsPageProps {
     fuel?: string
   }>
 }
-async function CarsList({ searchParams }: { searchParams: CarsPageProps['searchParams'] }) {
+async function CarsList({ searchParams, locale }: { searchParams: CarsPageProps['searchParams']; locale:SiteLocale }) {
   const params = await searchParams
   const supabase = await createClient()
 
@@ -36,7 +38,7 @@ async function CarsList({ searchParams }: { searchParams: CarsPageProps['searchP
   const { data: cars, error: carError } = await carQuery
 
   if (carError) {
-    return <div className="py-12 text-center text-destructive">Hata oluştu.</div>
+    return <div className="py-12 text-center text-destructive">{t(locale, 'Hata oluştu.')}</div>
   }
 
   return (
@@ -49,7 +51,7 @@ async function CarsList({ searchParams }: { searchParams: CarsPageProps['searchP
           || '/placeholder-car.png' // Kendi logonuz veya bir araç resmi
 
         return (
-          <CarCard
+          <CarCard locale={locale}
             key={car.id}
             car={{ ...car, image_url: mainImage }}
           />
@@ -60,6 +62,7 @@ async function CarsList({ searchParams }: { searchParams: CarsPageProps['searchP
 }
 
 export default async function CarsPage({ searchParams }: CarsPageProps) {
+  const locale = await getSiteLocale()
   return (
     <div className="relative overflow-hidden bg-background pt-24 pb-12 lg:pt-32 lg:pb-20">
       <Header />
@@ -70,10 +73,10 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
                 <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                  X Royal <span className="text-primary italic">Filosu</span>
+                  X Royal <span className="text-primary italic">{t(locale, 'Filosu')}</span>
                 </h1>
                 <p className="mt-4 text-xl text-muted-foreground max-w-2xl leading-relaxed">
-                  Karadağ'ın yollarında konfor ve prestiji keşfedin. Her ihtiyaca uygun, bakımlı ve lüks araç seçeneklerimizle hizmetinizdeyiz.
+                  {t(locale, "Karadağ'ın yollarında konfor ve prestiji keşfedin. Her ihtiyaca uygun, bakımlı ve lüks araç seçeneklerimizle hizmetinizdeyiz.")}
                 </p>
               </div>
             </div>
@@ -81,7 +84,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
 
           <div className="mb-12 sticky top-20 z-30">
             <Suspense fallback={<div className="h-16 w-full bg-muted animate-pulse rounded-2xl" />}>
-              <CarsFilter />
+              <CarsFilter locale={locale}/>
             </Suspense>
           </div>
 
@@ -94,7 +97,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
               </div>
             }
           >
-            <CarsList searchParams={searchParams} />
+            <CarsList searchParams={searchParams} locale={locale}/>
           </Suspense>
         </div>
       </main>

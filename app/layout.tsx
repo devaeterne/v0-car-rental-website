@@ -1,3 +1,4 @@
+import { getSiteLocale } from '@/lib/i18n-server'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
@@ -27,13 +28,14 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getSiteLocale()
   return (
-    <html lang="tr" className="bg-background">
+    <html lang={locale === 'cnr' ? 'sr-Latn-ME' : locale} className="bg-background">
       <body className={`${inter.variable} ${poppins.variable} font-sans antialiased`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}

@@ -1,3 +1,5 @@
+import { getSiteLocale } from '@/lib/i18n-server'
+import { t } from '@/lib/i18n'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -15,6 +17,7 @@ export async function generateMetadata({params}:Props): Promise<Metadata> {
 }
 
 export default async function CustomSitePage({params}:Props) {
+  const locale = await getSiteLocale()
   const {slug} = await params
   const page = await getPublicPage(slug)
   if (!page || page.is_system) notFound()
@@ -30,7 +33,7 @@ export default async function CustomSitePage({params}:Props) {
         {page.body.split(/\n\s*\n/).filter(Boolean).map((paragraph,index) =>
           <p key={index} className="whitespace-pre-line">{paragraph}</p>)}
       </article>
-      <Link href="/" className="mt-16 inline-block text-sm font-bold text-amber-700 hover:underline">Ana sayfaya dön</Link>
+      <Link href="/" className="mt-16 inline-block text-sm font-bold text-amber-700 hover:underline">{t(locale, 'Ana sayfaya dön')}</Link>
     </main>
     <Footer/>
   </div>

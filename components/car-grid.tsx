@@ -1,3 +1,4 @@
+import { t, type SiteLocale } from '@/lib/i18n'
 import { CarCard } from '@/components/car-card'
 import type { Car } from '@/lib/types'
 
@@ -5,13 +6,14 @@ interface CarGridProps {
   cars: Car[]
   title?: string
   description?: string
+  locale: SiteLocale
 }
 
-export function CarGrid({ cars, title, description }: CarGridProps) {
+export function CarGrid({ cars, title, description, locale }: CarGridProps) {
   if (cars.length === 0) {
     return (
       <div className="py-12 text-center">
-        <p className="text-lg text-muted-foreground">Kriterlere uygün Araç bulunamadi.</p>
+        <p className="text-lg text-muted-foreground">{t(locale, 'Kriterlere uygün Araç bulunamadi.')}</p>
       </div>
     )
   }
@@ -38,7 +40,7 @@ export function CarGrid({ cars, title, description }: CarGridProps) {
         )}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {cars.map((car) => (
-            <CarCard key={car.id} car={car} />
+            <CarCard key={car.id} car={car} locale={locale}/>
           ))}
         </div>
       </div>
