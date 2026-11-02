@@ -1,5 +1,8 @@
 'use client'
 
+import { t, type SiteLocale } from '@/lib/i18n'
+const tLabel = t
+
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -36,7 +39,7 @@ const fuelTypes = [
   { value: 'hybrid', label: 'Hibrit' },
 ]
 
-export function CarsFilter() {
+export function CarsFilter({locale}: {locale:SiteLocale}) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -64,15 +67,15 @@ export function CarsFilter() {
     <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
       <div className="flex flex-wrap items-end gap-4">
         <div className="min-w-[160px] flex-1 space-y-2">
-          <Label htmlFor="category">Kategori</Label>
+          <Label htmlFor="category">{t(locale, 'Kategori')}</Label>
           <Select value={currentCategory} onValueChange={(v) => updateFilter('category', v)}>
             <SelectTrigger id="category">
-              <SelectValue placeholder="Kategori secin" />
+              <SelectValue placeholder={t(locale, 'Kategori secin')} />
             </SelectTrigger>
             <SelectContent>
               {categories.map((cat) => (
                 <SelectItem key={cat.value} value={cat.value}>
-                  {cat.label}
+                  {t(locale,cat.label)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -80,15 +83,15 @@ export function CarsFilter() {
         </div>
 
         <div className="min-w-[160px] flex-1 space-y-2">
-          <Label htmlFor="transmission">Vites</Label>
+          <Label htmlFor="transmission">{t(locale, 'Vites')}</Label>
           <Select value={currentTransmission} onValueChange={(v) => updateFilter('transmission', v)}>
             <SelectTrigger id="transmission">
-              <SelectValue placeholder="Vites secin" />
+              <SelectValue placeholder={t(locale, 'Vites secin')} />
             </SelectTrigger>
             <SelectContent>
               {transmissions.map((t) => (
                 <SelectItem key={t.value} value={t.value}>
-                  {t.label}
+                  {tLabel(locale,t.label)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -96,15 +99,15 @@ export function CarsFilter() {
         </div>
 
         <div className="min-w-[160px] flex-1 space-y-2">
-          <Label htmlFor="fuel">Yakıt Türü</Label>
+          <Label htmlFor="fuel">{t(locale, 'Yakıt Türü')}</Label>
           <Select value={currentFuel} onValueChange={(v) => updateFilter('fuel', v)}>
             <SelectTrigger id="fuel">
-              <SelectValue placeholder="Yakit turu secin" />
+              <SelectValue placeholder={t(locale, 'Yakit turu secin')} />
             </SelectTrigger>
             <SelectContent>
               {fuelTypes.map((f) => (
                 <SelectItem key={f.value} value={f.value}>
-                  {f.label}
+                  {t(locale,f.label)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -114,7 +117,7 @@ export function CarsFilter() {
         {hasFilters && (
           <Button variant="outline" onClick={clearFilters} className="gap-2">
             <X className="h-4 w-4" />
-            Filtreleri Temizle
+            {t(locale, 'Filtreleri Temizle')}
           </Button>
         )}
       </div>

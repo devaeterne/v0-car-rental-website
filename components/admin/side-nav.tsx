@@ -15,6 +15,12 @@ export function SideNav() {
       <a href="/feeds/cars.xml" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><FileCode2 className="h-4 w-4 text-[#e4c45c]" /> XML Feed <ExternalLink className="ml-auto h-3 w-3" /></a>
       <Link href="/cars" target="_blank" className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><CarFront className="h-4 w-4 text-[#e4c45c]" /> Web sitesi</Link>
     </nav>
-    <div className="mt-auto hidden border-t border-white/10 p-4 md:block"><form action={logoutAdmin}><button className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><LogOut className="h-4 w-4" /> Çıkış yap</button></form></div>
+    <div className="mt-auto border-t border-white/10 p-4">
+      <form action={logoutAdmin} className="hidden md:block"><button className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><LogOut className="h-4 w-4"/> Çıkış yap</button></form>
+      <a href="https://www.dasoft.me" target="_blank" rel="noopener noreferrer" aria-label="DA Software and Solutions web sitesi" className="mt-3 flex items-center justify-center gap-1 rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold tracking-wide text-white/60 transition-colors hover:border-[#e4c45c] hover:text-white">
+        Crafted by <span className="font-black text-white">Da<span className="text-[#e4c45c]">Soft</span></span><ExternalLink className="ml-1 h-3 w-3"/>
+      </a>
+    </div>
+
   </aside>
 }

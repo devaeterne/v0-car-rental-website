@@ -1,3 +1,4 @@
+import { t, type SiteLocale } from '@/lib/i18n'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -8,6 +9,7 @@ import type { Car } from '@/lib/types'
 
 interface CarCardProps {
   car: Car
+  locale: SiteLocale
 }
 
 const categoryColors: Record<string, string> = {
@@ -27,9 +29,9 @@ const categoryLabels: Record<string, string> = {
   sports: 'Spor',
   van: 'Van',
 }
-export function CarCard({ car }: CarCardProps) {
+export function CarCard({ car, locale }: CarCardProps) {
   // car_images içinden is_main olanı bul, yoksa ilk resmi al
-  const displayImage = car.car_images?.find((img: any) => img.is_main)?.image_url 
+  const displayImage = car.car_images?.find((img: {is_main:boolean;image_url:string}) => img.is_main)?.image_url
                     || car.car_images?.[0]?.image_url;
 
   return (
@@ -52,10 +54,10 @@ export function CarCard({ car }: CarCardProps) {
             <ImageIcon className="h-10 w-10 stroke-[1.5] opacity-20" />
           </div>
         )}
-        
+
         {/* Floating Category Badge */}
         <Badge className={`absolute left-4 top-4 border backdrop-blur-md shadow-sm px-3 py-1 text-[10px] font-black uppercase tracking-[0.1em] ${categoryColors[car.category] || 'bg-slate-800 text-white'}`}>
-          {categoryLabels[car.category] || car.category}
+          {t(locale, categoryLabels[car.category] || car.category)}
         </Badge>
       </div>
 
@@ -65,7 +67,7 @@ export function CarCard({ car }: CarCardProps) {
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 italic">Exclusive Series</span>
             <div className="flex items-center gap-1 text-slate-900 font-black">
               <span className="text-2xl tracking-tighter">€{car.price_per_day}</span>
-              <span className="text-[10px] uppercase tracking-widest text-slate-400">/ Gün</span>
+              <span className="text-[10px] uppercase tracking-widest text-slate-400">{t(locale, '/ Gün')}</span>
             </div>
           </div>
           <h3 className="text-2xl font-black tracking-tight text-slate-900 leading-none mt-1">
@@ -95,7 +97,7 @@ export function CarCard({ car }: CarCardProps) {
               </span>
             </div>
           </div>
-          
+
           <Link href={`/cars/${car.id}`} className="group/btn">
              <div className="h-8 w-8 rounded-full border border-slate-200 flex items-center justify-center transition-all group-hover/btn:bg-primary group-hover/btn:border-primary">
                 <ArrowUpRight className="h-4 w-4 text-slate-400 transition-colors group-hover/btn:text-white" />
@@ -107,7 +109,7 @@ export function CarCard({ car }: CarCardProps) {
       <CardFooter className="px-6 pb-6 pt-0">
         <Link href={`/cars/${car.id}`} className="w-full">
           <Button className="w-full h-12 bg-slate-900 text-white font-black uppercase tracking-[0.15em] text-[11px] rounded-none transition-all hover:bg-primary border-none shadow-none active:scale-[0.98]">
-            Detayları İncele
+            {t(locale, 'Detayları İncele')}
           </Button>
         </Link>
       </CardFooter>

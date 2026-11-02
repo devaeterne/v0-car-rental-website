@@ -32,7 +32,7 @@ export function PageForm({page}: {page?:SitePage}) {
           <input type="checkbox" name="published" defaultChecked={page?.published ?? false} className="h-4 w-4 accent-amber-600"/> Yayımla
         </label>
         <label className="flex items-center gap-2 text-sm font-semibold">
-          <input type="checkbox" name="show_in_footer" defaultChecked={page?.show_in_footer ?? false} className="h-4 w-4 accent-amber-600"/> Footer'da göster
+          <input type="checkbox" name="show_in_footer" defaultChecked={page?.show_in_footer ?? false} className="h-4 w-4 accent-amber-600"/> Footer&apos;da göster
         </label>
       </div>}
       {page?.is_system && <div className="rounded-xl bg-slate-50 p-4 text-xs text-slate-600">Bu sistem sayfası yayımlanmaya devam eder; sayfa başlığı, giriş metni ve ana içeriği düzenlenebilir.</div>}

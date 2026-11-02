@@ -1,6 +1,8 @@
+import { getSiteLocale } from '@/lib/i18n-server'
+import { t } from '@/lib/i18n'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { Card, CardContent } from '@/components/ui/card'
+
 import { Shield, Clock, Users, Award, MapPin, CheckCircle2 } from 'lucide-react'
 import Image from 'next/image'
 import { getPublicPage, getSiteSettings } from '@/lib/site-content'
@@ -30,6 +32,7 @@ const values = [
 ]
 
 export default async function AboutPage() {
+  const locale = await getSiteLocale()
   const [page,company] = await Promise.all([getPublicPage('hakkimizda'),getSiteSettings()])
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -43,11 +46,11 @@ export default async function AboutPage() {
               PREMIUM RENT A CAR
             </span>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 uppercase leading-none">
-              {page?.title ?? <>Yolculuğun <br />
+              {locale !== 'tr' ? t(locale,'Yolculuğun Zirve Noktası') : page?.title ?? <>Yolculuğun <br />
               <span className="text-primary/20 stroke-primary text-transparent [-webkit-text-stroke:1px_theme(colors.primary)]">Zirve Noktası</span></>}
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-base md:text-lg font-medium text-slate-500 leading-relaxed">
-              {page?.intro || 'X Royal Rent A Car, Karadağ’ın eşsiz coğrafyasını keşfetmeniz için tasarlanmış, prestij ve güveni birleştiren yeni nesil kiralama çözümüdür.'}
+              {locale === 'tr' ? page?.intro || 'X Royal Rent A Car, Karadağ’ın eşsiz coğrafyasını keşfetmeniz için tasarlanmış, prestij ve güveni birleştiren yeni nesil kiralama çözümüdür.' : locale === 'en' ? 'Discover Montenegro with our reliable and comfortable car rental service.' : 'Otkrijte Crnu Goru uz pouzdanu i udobnu uslugu iznajmljivanja automobila.'}
             </p>
           </div>
           
@@ -73,13 +76,13 @@ export default async function AboutPage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h2 className="text-4xl font-black tracking-tight text-slate-900 uppercase">
-                  Karadağ&apos;da <span className="text-primary">Hikayemiz</span>
+                  Karadağ&apos;da <span className="text-primary">{t(locale, 'Hikayemiz')}</span>
                 </h2>
                 <div className="h-1.5 w-20 bg-primary rounded-full" />
               </div>
               
               <div className="space-y-6 text-slate-600 font-medium leading-relaxed">
-                {(page?.body || "Karadağ'ın büyüleyici başkenti Podgorica merkezli kurulan X Royal Rent A Car, bölgeye gelen misafirlerimizin en büyük ihtiyacı olan sorunsuz mobilite kavramını yeniden tanımlamak için yola çıktı.\n\nAmacımız, ister iş seyahati ister tatil amaçlı olsun, ziyaretçilerimize Karadağ'ın her köşesini en konforlu araçlarla keşfetme imkanı sunmaktır.")
+                {((locale === 'en' ? 'Based in Podgorica, X Royal Rent A Car delivers a comfortable and reliable car rental experience in Montenegro.\n\nExplore the Adriatic coast, mountain routes and historic towns with flexible vehicle pickup and dedicated support.' : locale === 'cnr' ? 'X Royal Rent A Car sa sjedištem u Podgorici pruža udobno i pouzdano iznajmljivanje vozila u Crnoj Gori.\n\nOtkrijte primorje, planine i istorijske gradove uz fleksibilno preuzimanje vozila i posvećenu podršku.' : page?.body) || "Karadağ'ın büyüleyici başkenti Podgorica merkezli kurulan X Royal Rent A Car, bölgeye gelen misafirlerimizin en büyük ihtiyacı olan sorunsuz mobilite kavramını yeniden tanımlamak için yola çıktı.\n\nAmacımız, ister iş seyahati ister tatil amaçlı olsun, ziyaretçilerimize Karadağ'ın her köşesini en konforlu araçlarla keşfetme imkanı sunmaktır.")
                   .split(/\n\s*\n/).filter(Boolean).map((paragraph,index) => <p key={index} className="whitespace-pre-line">{paragraph}</p>)}
                 
                 <ul className="grid gap-3 pt-4">
@@ -99,21 +102,21 @@ export default async function AboutPage() {
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="text-center mb-20">
               <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white uppercase italic">
-                Bizi Farklı Kılan <span className="text-primary">Standartlarımız</span>
+                {t(locale, 'Bizi Farklı Kılan')} <span className="text-primary">{t(locale, 'Standartlarımız')}</span>
               </h2>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {values.map((value) => (
-                <div key={value.title} className="group relative p-8 rounded-[2rem] bg-white/5 border border-white/10 transition-all hover:bg-white/10">
+                <div key={t(locale,value.title)} className="group relative p-8 rounded-[2rem] bg-white/5 border border-white/10 transition-all hover:bg-white/10">
                   <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20 text-primary">
                     <value.icon className="h-6 w-6" />
                   </div>
                   <h3 className="mb-3 text-[13px] font-black tracking-widest text-white uppercase italic">
-                    {value.title}
+                    {t(locale,value.title)}
                   </h3>
                   <p className="text-sm text-slate-400 font-medium leading-relaxed">
-                    {value.description}
+                    {t(locale,value.description)}
                   </p>
                 </div>
               ))}
@@ -126,7 +129,7 @@ export default async function AboutPage() {
     <div className="rounded-[3rem] bg-white p-8 md:p-16 shadow-xl border border-slate-100 flex flex-col md:flex-row gap-12 items-center">
       <div className="flex-1 space-y-6 text-center md:text-left">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black tracking-widest uppercase">
-            <MapPin className="h-3 w-3" /> Lokasyon Bilgisi
+            <MapPin className="h-3 w-3" /> {t(locale, 'Lokasyon Bilgisi')}
         </div>
         <h2 className="text-4xl font-black tracking-tight text-slate-900 uppercase leading-none">
           {company.location_label}

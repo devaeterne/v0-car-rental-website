@@ -1,5 +1,8 @@
 'use client'
 
+import { t, type SiteLocale } from '@/lib/i18n'
+import { LanguageSelector } from '@/components/language-selector'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
@@ -7,14 +10,14 @@ import { Button } from '@/components/ui/button'
 import { Menu, X, MessageCircle, ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const navLinks = [
-  { name: 'ANA SAYFA', href: '/' },
-  { name: 'FİLOMUZ', href: '/cars' },
-  { name: 'HAKKIMIZDA', href: '/hakkimizda' },
-  { name: 'İLETİŞİM', href: '/iletisim' },
+const navLinks = (locale: SiteLocale) => [
+  { name: t(locale, 'ANA SAYFA'), href: '/' },
+  { name: t(locale, 'FİLOMUZ'), href: '/cars' },
+  { name: t(locale, 'HAKKIMIZDA'), href: '/hakkimizda' },
+  { name: t(locale, 'İLETİŞİM'), href: '/iletisim' },
 ]
 
-export function HeaderClient({whatsappPhone}: {whatsappPhone:string}) {
+export function HeaderClient({whatsappPhone, locale}: {whatsappPhone:string;locale:SiteLocale}) {
   const WHATSAPP_URL = `https://wa.me/${whatsappPhone.replace(/\D/g, '')}`
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -55,7 +58,7 @@ export function HeaderClient({whatsappPhone}: {whatsappPhone:string}) {
 
         {/* Masaüstü Navigasyon - Mimari ve Dengeli */}
         <nav className="hidden items-center gap-2 lg:flex">
-          {navLinks.map((link) => (
+          {navLinks(locale).map((link) => (
             <Link
               key={link.name}
               href={link.href}
@@ -69,8 +72,8 @@ export function HeaderClient({whatsappPhone}: {whatsappPhone:string}) {
           ))}
         </nav>
 
-        {/* Sağ Taraf - Tek Odak: WhatsApp */}
-        <div className="hidden flex-1 items-center justify-end lg:flex">
+        {/* Customer-facing locale control and WhatsApp */}
+        <div className="hidden flex-1 items-center justify-end gap-4 lg:flex"><LanguageSelector locale={locale}/>
           <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
             <Button 
               className="h-12 rounded-none bg-slate-900 px-8 text-[11px] font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-primary hover:shadow-xl hover:shadow-primary/20 active:scale-[0.98]"
@@ -83,7 +86,8 @@ export function HeaderClient({whatsappPhone}: {whatsappPhone:string}) {
         </div>
 
         {/* Mobil Menü Kontrolü */}
-        <div className="lg:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
+          <LanguageSelector locale={locale}/>
           <button
             type="button"
             className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg shadow-slate-900/20"
@@ -103,7 +107,7 @@ export function HeaderClient({whatsappPhone}: {whatsappPhone:string}) {
       >
         <div className="flex h-full flex-col justify-between p-8">
           <div className="space-y-6 pt-12">
-            {navLinks.map((link) => (
+            {navLinks(locale).map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
@@ -118,7 +122,7 @@ export function HeaderClient({whatsappPhone}: {whatsappPhone:string}) {
           <div className="pb-12">
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
               <Button className="h-16 w-full rounded-none bg-[#25D366] text-[13px] font-black uppercase tracking-[0.2em] text-white">
-                WHATSAPP İLE İLETİŞİM
+                {t(locale, 'WHATSAPP İLE İLETİŞİM')}
               </Button>
             </a>
           </div>

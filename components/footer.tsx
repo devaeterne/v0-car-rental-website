@@ -1,11 +1,14 @@
+import { getSiteLocale } from '@/lib/i18n-server'
+import { t } from '@/lib/i18n'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook } from 'lucide-react'
+import { Phone, MapPin, ArrowRight, Instagram, Facebook } from 'lucide-react'
 
 import { getSiteSettings, getFooterPages, telHref } from '@/lib/site-content'
 
 export async function Footer() {
   const [company, extraPages] = await Promise.all([getSiteSettings(), getFooterPages()])
+  const locale = await getSiteLocale()
   const currentYear = new Date().getFullYear()
 
   return (
@@ -26,7 +29,7 @@ export async function Footer() {
               />
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm font-medium">
-              {company.footer_description}
+              {locale === 'tr' ? company.footer_description : t(locale, 'Karadağ seyahatinizde araç kiralamanın ötesinde, konforlu ve prestijli bir karşılama deneyimi sunuyoruz.')}
             </p>
             <div className="flex gap-4">
               <a href={company.instagram_url || '#'} className="h-10 w-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all group">
@@ -43,10 +46,10 @@ export async function Footer() {
             
             {/* Quick Links */}
             <div className="space-y-6">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">Kurumsal</h3>
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">{t(locale, 'Kurumsal')}</h3>
               <ul className="space-y-4">
                 {[
-                  ['Ana Sayfa','/'],['Filomuz','/cars'],['Hakkımızda','/hakkimizda'],['İletişim','/iletisim'],
+                  [t(locale,'Ana Sayfa'),'/'],[t(locale,'Filomuz'),'/cars'],[t(locale,'Hakkımızda'),'/hakkimizda'],[t(locale,'İletişim'),'/iletisim'],
                   ...extraPages.map(p => [p.title,'/sayfa/'+p.slug])
                 ].map(([item,href]) => (
                   <li key={href}>
@@ -61,13 +64,13 @@ export async function Footer() {
 
             {/* Categories */}
             <div className="space-y-6">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">Kategoriler</h3>
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">{t(locale, 'Kategoriler')}</h3>
               <ul className="space-y-4">
                 {[
-                  { name: 'Lüks Araçlar', slug: 'luxury' },
+                  { name: t(locale, 'Lüks Araçlar'), slug: 'luxury' },
                   { name: 'SUV & 4x4', slug: 'suv' },
-                  { name: 'Ekonomik', slug: 'economy' },
-                  { name: 'Spor', slug: 'sports' }
+                  { name: t(locale, 'Ekonomik'), slug: 'economy' },
+                  { name: t(locale, 'Spor'), slug: 'sports' }
                 ].map((cat) => (
                   <li key={cat.slug}>
                     <Link href={`/cars?category=${cat.slug}`} className="text-sm text-slate-400 hover:text-white transition-colors">
@@ -80,7 +83,7 @@ export async function Footer() {
 
             {/* Support */}
             <div className="space-y-6 col-span-2 md:col-span-1">
-              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">Lokasyon</h3>
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">{t(locale, 'Lokasyon')}</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <MapPin className="h-5 w-5 text-primary shrink-0" />
@@ -94,7 +97,7 @@ export async function Footer() {
                       <Phone className="h-4 w-4 text-[#25D366] group-hover:text-white" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">7/24 Destek</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{t(locale, '7/24 Destek')}</p>
                       <p className="text-sm font-bold text-white tracking-tight">{company.phone}</p>
                     </div>
                   </a>
@@ -107,20 +110,20 @@ export async function Footer() {
 
         {/* Bottom Bar */}
         {(company.legal_name || company.tax_number || company.registration_number) && <div className="mt-8 text-xs text-slate-500">
-          {[company.legal_name, company.tax_number && 'Vergi No: ' + company.tax_number, company.registration_number && 'Kayıt No: ' + company.registration_number].filter(Boolean).join(' · ')}
+          {[company.legal_name, company.tax_number && t(locale, 'Vergi No: ') + company.tax_number, company.registration_number && t(locale, 'Kayıt No: ') + company.registration_number].filter(Boolean).join(' · ')}
         </div>}
         <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[11px] font-medium text-slate-500 tracking-wide uppercase">
-            © {currentYear} {company.brand_name}. ALL RIGHTS RESERVED.
+            © {currentYear} {company.brand_name}. {t(locale,'ALL RIGHTS RESERVED.')}
           </p>
           
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-black text-slate-600 tracking-[0.2em] uppercase">Crafted by</span>
-            <div className="px-3 py-1 bg-white/5 rounded-full border border-white/10">
+            <a href="https://www.dasoft.me" target="_blank" rel="noopener noreferrer" aria-label="DA Software and Solutions web sitesi" className="px-3 py-1 bg-white/5 rounded-full border border-white/10 transition-colors hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
               <span className="text-[11px] font-black tracking-tighter text-white">
                 Da<span className="text-primary">Soft</span>
               </span>
-            </div>
+            </a>
           </div>
         </div>
       </div>

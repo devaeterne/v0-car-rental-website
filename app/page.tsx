@@ -1,3 +1,6 @@
+import { getSiteLocale } from '@/lib/i18n-server'
+import { t } from '@/lib/i18n'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
@@ -10,6 +13,7 @@ import { getSiteSettings, getPublicPage } from '@/lib/site-content'
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
+  const locale = await getSiteLocale()
   const supabase = await createClient()
   const [homeContent,company] = await Promise.all([getPublicPage('ana-sayfa'),getSiteSettings()])
 
@@ -38,11 +42,11 @@ export default async function HomePage() {
       
       <main className="flex-1">
         {/* Modern Karşılama Alanı */}
-        <HeroSection heading={homeContent?.title} intro={homeContent?.intro} whatsappPhone={company.whatsapp_phone}/>
+        <HeroSection heading={homeContent?.title} intro={homeContent?.intro} whatsappPhone={company.whatsapp_phone} locale={locale}/>
 
         {/* Kurumsal Avantajlar (Karşılama, Sınırsız KM vb.) */}
         <div className="bg-white">
-          <FeaturesSection />
+          <FeaturesSection locale={locale}/>
         </div>
 
         {/* Öne Çıkan Araçlar Bölümü */}
@@ -53,29 +57,29 @@ export default async function HomePage() {
                 Exclusive Selection
               </span>
               <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
-                Öne Çıkan <span className="text-primary/10 stroke-primary text-transparent [-webkit-text-stroke:1px_theme(colors.primary)]">Filomuz</span>
+                {t(locale, 'Öne Çıkan')} <span className="text-primary/10 stroke-primary text-transparent [-webkit-text-stroke:1px_theme(colors.primary)]">{t(locale, 'Filomuz')}</span>
               </h2>
               <div className="h-1 w-20 bg-primary rounded-full" />
             </div>
             
             <p className="max-w-md text-slate-500 font-medium text-sm leading-relaxed">
-              Karadağ'ın en genç ve bakımlı araç filosuyla tanışın. Size özel lüks ve konfor seçeneklerini keşfedin.
+              {t(locale, "Karadağ'ın en genç ve bakımlı araç filosuyla tanışın. Size özel lüks ve konfor seçeneklerini keşfedin.")}
             </p>
           </div>
 
-          {homeContent?.body && <p className="mb-8 max-w-3xl whitespace-pre-line text-slate-600">{homeContent.body}</p>}
-          <CarGrid
+          {locale === 'tr' && homeContent?.body && <p className="mb-8 max-w-3xl whitespace-pre-line text-slate-600">{homeContent.body}</p>}
+          <CarGrid locale={locale}
             cars={(featuredCars as Car[]) || []}
             // Title ve Description zaten yukarıda özel tasarlandığı için Grid içindekileri boş geçebiliriz
           />
 
           <div className="mt-16 text-center">
-            <a href="/cars">
+            <Link href="/cars">
               <button className="group relative px-12 py-4 bg-slate-900 text-white font-black uppercase tracking-widest text-xs transition-all hover:bg-primary overflow-hidden">
-                <span className="relative z-10">Tüm Filoyu Görüntüle</span>
+                <span className="relative z-10">{t(locale, 'Tüm Filoyu Görüntüle')}</span>
                 <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               </button>
-            </a>
+            </Link>
           </div>
         </section>
       </main>

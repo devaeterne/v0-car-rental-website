@@ -27,7 +27,7 @@ export function CarForm({ car }: { car?: EditableCar }) {
       </div>
       <label className="flex items-center gap-3 rounded-xl border bg-slate-50 p-4 text-sm font-semibold">
         <input type="checkbox" name="available" className="h-5 w-5 accent-amber-500" defaultChecked={car?.available ?? false}/>
-        <span><strong className="block">Araç aktif</strong><small className="font-normal text-slate-500">Aktif araç sitede ve XML'de görünür.</small></span>
+        <span><strong className="block">Araç aktif</strong><small className="font-normal text-slate-500">Aktif araç sitede ve XML&apos;de görünür.</small></span>
       </label>
       <div className="flex justify-end gap-3 border-t pt-5">
         <Link href="/admin" className="rounded-xl border px-5 py-3 text-sm font-semibold">Vazgeç</Link>
